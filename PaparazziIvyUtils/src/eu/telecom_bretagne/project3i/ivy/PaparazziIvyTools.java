@@ -157,6 +157,7 @@ public class PaparazziIvyTools
 		// ------- Buttons -------
 
 		JButton btnClear = new JButton("Clear");
+		btnClear.setFont(new Font("Dialog", Font.BOLD, 10));
 		btnClear.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -166,6 +167,7 @@ public class PaparazziIvyTools
 		});
 		
 		btnUnbind = new JButton("Unbind");
+		btnUnbind.setFont(new Font("Dialog", Font.BOLD, 10));
 		btnUnbind.setEnabled(false);
 		btnUnbind.addActionListener(new ActionListener()
 		{
@@ -185,6 +187,7 @@ public class PaparazziIvyTools
 		});
 
 		tglbtnGCS = new JToggleButton("GCS", tglbtnGCSActive);
+		tglbtnGCS.setFont(new Font("Dialog", Font.BOLD, 10));
 		tglbtnGCS.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -204,6 +207,7 @@ public class PaparazziIvyTools
 		});
 
 		tglbtnServer = new JToggleButton("Server", tglbtnServerActive);
+		tglbtnServer.setFont(new Font("Dialog", Font.BOLD, 10));
 		tglbtnServer.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -223,6 +227,7 @@ public class PaparazziIvyTools
 		});
 
 		tglbtnSim = new JToggleButton("Sim", tglbtnSimActive);
+		tglbtnSim.setFont(new Font("Dialog", Font.BOLD, 10));
 		tglbtnSim.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -242,6 +247,7 @@ public class PaparazziIvyTools
 		});
 
     tglbtnUav3i = new JToggleButton("uav3i", tglbtnUav3iActive);
+    tglbtnUav3i.setFont(new Font("Dialog", Font.BOLD, 10));
     tglbtnUav3i.addActionListener(new ActionListener()
     {
       public void actionPerformed(ActionEvent e)
@@ -261,6 +267,7 @@ public class PaparazziIvyTools
     });
 
 		tglbtnAll = new JToggleButton("All", tglbtnAllActive);
+		tglbtnAll.setFont(new Font("Dialog", Font.BOLD, 10));
 		tglbtnAll.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -294,6 +301,7 @@ public class PaparazziIvyTools
 		tfMessage.setColumns(10);
 		
 		btnSendMessage = new JButton("Send");
+		btnSendMessage.setFont(new Font("Dialog", Font.BOLD, 10));
 		btnSendMessage.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
