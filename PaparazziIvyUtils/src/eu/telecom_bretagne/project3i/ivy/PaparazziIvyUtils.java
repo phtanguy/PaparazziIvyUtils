@@ -165,7 +165,7 @@ public class PaparazziIvyUtils
 		// ------- Display logs -------
 
 		ivyLogsArea = new JTextArea();
-		ivyLogsArea.setFont(new Font("Consolas", Font.PLAIN, 11));
+		ivyLogsArea.setFont(new Font("Monospaced", Font.PLAIN, 10));
 		//ivyLogsArea.setEditable(false);
 		JScrollPane scrollPane = new JScrollPane(ivyLogsArea);
 		frmPaparazziIvyUtils.getContentPane().add(scrollPane, BorderLayout.CENTER);
