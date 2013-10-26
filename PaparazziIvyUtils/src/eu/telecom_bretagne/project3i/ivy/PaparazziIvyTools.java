@@ -187,7 +187,6 @@ public class PaparazziIvyTools
 		});
 
 		tglbtnGCS = new JToggleButton("GCS", tglbtnGCSActive);
-		tglbtnGCS.setFont(new Font("Dialog", Font.BOLD, 10));
 		tglbtnGCS.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
