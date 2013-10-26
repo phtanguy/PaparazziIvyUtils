@@ -6,9 +6,12 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.util.Properties;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -20,15 +23,20 @@ import fr.dgac.ivy.Ivy;
 import fr.dgac.ivy.IvyClient;
 import fr.dgac.ivy.IvyException;
 import fr.dgac.ivy.IvyMessageListener;
+import javax.swing.SwingConstants;
+import javax.swing.JLabel;
 
-public class PaparazziIvyTools
+public class PaparazziIvyUtils
 {
 	//-----------------------------------------------------------------------------
-	private String applicationName = "Paparazzi Ivy Tools";
+	private String applicationName = "Paparazzi Ivy Utils";
 
-	private JFrame        frmPaparazziIvyTools;
+	private JFrame        frmPaparazziIvyUtils;
 	private JTextArea     ivyLogsArea;
 	private JButton       btnUnbind;
+  private JButton       btnSendMessage;
+  private JTextField    tfMessage;
+  private JLabel        lblDomainBus;
 	private JToggleButton tglbtnGCS;
 	private JToggleButton tglbtnServer;
   private JToggleButton tglbtnSim;
@@ -37,11 +45,10 @@ public class PaparazziIvyTools
 
 	private boolean tglbtnGCSActive, tglbtnServerActive, tglbtnSimActive, tglbtnUav3iActive, tglbtnAllActive  = false;
 	
-	private Ivy                 bus;
+	private Ivy                  bus;
+  private String               domainBus;
 	private AllMessagesListener allMessagesListener;
-	private boolean             bound;
-	private JTextField tfMessage;
-	private JButton btnSendMessage;
+	private boolean              bound;
 	//-----------------------------------------------------------------------------
 	/**
 	 * Launch the application.
@@ -62,8 +69,8 @@ public class PaparazziIvyTools
 			{
 				try
 				{
-					PaparazziIvyTools window = new PaparazziIvyTools();
-					window.frmPaparazziIvyTools.setVisible(true);
+					PaparazziIvyUtils window = new PaparazziIvyUtils();
+					window.frmPaparazziIvyUtils.setVisible(true);
 				}
 				catch (Exception e)
 				{
@@ -77,25 +84,48 @@ public class PaparazziIvyTools
 	 * Create the application.
 	 * @throws IvyException 
 	 */
-	public PaparazziIvyTools() throws IvyException
+	public PaparazziIvyUtils() throws IvyException
 	{
-		initializeIvy();
-		initializeUI();
+	  try
+	  {
+      initializeIvy(getIvyDomainBus());
+      initializeUI();
+    }
+    catch (Exception e)
+    {
+      JOptionPane.showMessageDialog(null,
+                                     "<html>Problème :<br/>" + e.getMessage(),
+                                     "Error",
+                                     JOptionPane.ERROR_MESSAGE);
+      e.printStackTrace();
+      System.exit(-1);
+    }
 	}
-	//-----------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------
+  private String  getIvyDomainBus() throws Exception
+  {
+    Properties props = new Properties();
+    props.load(new FileInputStream("IvyDomain.properties"));
+    domainBus = props.getProperty("IVY_DOMAIN_BUS");
+    if (domainBus == null)
+      throw new Exception("La clé <i>IVY_DOMAIN_BUS</i> n'a pas été trouvée dans le fichier <i>IvyDomain.properties</i>");
+    if(domainBus.length() == 0 || domainBus.equalsIgnoreCase("null"))
+      return null;
+    else
+      return domainBus;
+  }
+  //-----------------------------------------------------------------------------
 	/**
 	 * Initailize the connection to the Ivy bus.
 	 * @throws IvyException 
 	 */
-	private void initializeIvy() throws IvyException
+	private void initializeIvy(String domain) throws IvyException
 	{
     // initialization, name and ready message
     bus = new Ivy(applicationName,
     		          applicationName + " Ready",
     		          null);
-    //bus.start(null);
-    //bus.start("192.168.110:2010");
-    bus.start("192.168.1:2010");
+    bus.start(domain);
 
 		// Initialisation of the main Ivy listener.
 		allMessagesListener = new AllMessagesListener();
@@ -124,13 +154,13 @@ public class PaparazziIvyTools
 	{
 		// ------- Main frame -------
 		
-		frmPaparazziIvyTools = new JFrame();
-		frmPaparazziIvyTools.setTitle(applicationName);
+		frmPaparazziIvyUtils = new JFrame();
+		frmPaparazziIvyUtils.setTitle(applicationName);
 		//frmPaparazziIvyTools.setBounds(100, 100, 550, 900);
-		frmPaparazziIvyTools.setSize(550, 900);
-		frmPaparazziIvyTools.setLocationRelativeTo(null);
-		frmPaparazziIvyTools.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmPaparazziIvyTools.getContentPane().setLayout(new BorderLayout(0, 5));
+		frmPaparazziIvyUtils.setSize(550, 900);
+		frmPaparazziIvyUtils.setLocationRelativeTo(null);
+		frmPaparazziIvyUtils.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmPaparazziIvyUtils.getContentPane().setLayout(new BorderLayout(0, 5));
 		
 		// ------- Display logs -------
 
@@ -138,13 +168,13 @@ public class PaparazziIvyTools
 		ivyLogsArea.setFont(new Font("Consolas", Font.PLAIN, 11));
 		//ivyLogsArea.setEditable(false);
 		JScrollPane scrollPane = new JScrollPane(ivyLogsArea);
-		frmPaparazziIvyTools.getContentPane().add(scrollPane, BorderLayout.CENTER);
+		frmPaparazziIvyUtils.getContentPane().add(scrollPane, BorderLayout.CENTER);
 		
 		
 		// ------- Panels -------
 
 		JPanel panelCommands = new JPanel();
-		frmPaparazziIvyTools.getContentPane().add(panelCommands, BorderLayout.SOUTH);
+		frmPaparazziIvyUtils.getContentPane().add(panelCommands, BorderLayout.SOUTH);
 		panelCommands.setLayout(new GridLayout(2, 1, 0, 5));
 		
 		JPanel panelButtons = new JPanel();
@@ -296,11 +326,13 @@ public class PaparazziIvyTools
 		panelButtons.add(tglbtnAll);
 		
 		tfMessage = new JTextField();
+		tfMessage.setHorizontalAlignment(SwingConstants.CENTER);
 		tfMessage.setFont(new Font("Consolas", Font.BOLD, 11));
 		panelSendMessages.add(tfMessage, BorderLayout.CENTER);
 		tfMessage.setColumns(10);
 		
 		btnSendMessage = new JButton("Send");
+		btnSendMessage.setHorizontalAlignment(SwingConstants.RIGHT);
 		btnSendMessage.setFont(new Font("Dialog", Font.BOLD, 10));
 		btnSendMessage.addActionListener(new ActionListener()
 		{
@@ -317,6 +349,11 @@ public class PaparazziIvyTools
 			}
 		});
 		panelSendMessages.add(btnSendMessage, BorderLayout.EAST);
+		
+		lblDomainBus = new JLabel("<html>Ivy Domain Bus: <i>" + domainBus + "</i>");
+		lblDomainBus.setFont(new Font("Dialog", Font.BOLD, 10));
+		lblDomainBus.setHorizontalAlignment(SwingConstants.LEFT);
+		panelSendMessages.add(lblDomainBus, BorderLayout.NORTH);
 	}
 	//-----------------------------------------------------------------------------
 
