@@ -12,9 +12,8 @@
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
         <file path="/PaparazziIvyUtils/.classpath"/>
-        <file path="/PaparazziIvyUtils/.project"/>
         <file path="/PaparazziIvyUtils/lib/ivy-java.jar"/>
-        <file path="/PaparazziIvyUtils/Déploiement_PaparazziIvyUtils.zip"/>
+        <file path="/PaparazziIvyUtils/.project"/>
         <javaElement handleIdentifier="=PaparazziIvyUtils/src"/>
     </selectedElements>
 </jardesc>
