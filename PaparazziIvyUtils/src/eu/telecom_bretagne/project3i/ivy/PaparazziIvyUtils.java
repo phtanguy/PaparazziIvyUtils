@@ -369,7 +369,7 @@ public class PaparazziIvyUtils
 		@Override
     public void receive(IvyClient client, String[] args)
     {
-		  System.out.println("Je reçois quelque chose... " + args[0]);
+		  //System.out.println("Je reçois quelque chose... " + args[0]);
 			String applicationName = client.getApplicationName();
 
 			boolean display =    (applicationName.startsWith("Paparazzi GCS") && tglbtnGCSActive)
