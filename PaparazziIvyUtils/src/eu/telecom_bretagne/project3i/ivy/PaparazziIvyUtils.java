@@ -145,7 +145,25 @@ public class PaparazziIvyUtils
       e1.printStackTrace();
     }
 	}
-	//-----------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------
+	private void displayBindedButtons()
+	{
+    // Le texte des boutons s'affiche en gras indiquant que l'on est "bindé" sur le bus Ivy
+    tglbtnGCS.setFont(new Font("Dialog", Font.BOLD, 10));
+    tglbtnServer.setFont(new Font("Dialog", Font.BOLD, 10));
+    tglbtnSim.setFont(new Font("Dialog", Font.BOLD, 10));
+    tglbtnUav3i.setFont(new Font("Dialog", Font.BOLD, 10));
+	}
+  //-----------------------------------------------------------------------------
+  private void displayUnBindedButtons()
+  {
+    // Le texte des boutons s'affiche en italique indiquant que l'on n'est pas/plus "bindé" sur le bus Ivy
+    tglbtnGCS.setFont(new Font("Dialog", Font.ITALIC, 10));
+    tglbtnServer.setFont(new Font("Dialog", Font.ITALIC, 10));
+    tglbtnSim.setFont(new Font("Dialog", Font.ITALIC, 10));
+    tglbtnUav3i.setFont(new Font("Dialog", Font.ITALIC, 10));
+  }
+  //-----------------------------------------------------------------------------
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -213,10 +231,7 @@ public class PaparazziIvyUtils
         tglbtnUav3i.setSelected(false);
 
         // Le texte des boutons s'affiche en italique indiquant que l'on n'est pas/plus "bindé" sur le bus Ivy
-        tglbtnGCS.setFont(new Font("Dialog", Font.ITALIC, 10));
-        tglbtnServer.setFont(new Font("Dialog", Font.ITALIC, 10));
-        tglbtnSim.setFont(new Font("Dialog", Font.ITALIC, 10));
-        tglbtnUav3i.setFont(new Font("Dialog", Font.ITALIC, 10));
+        displayUnBindedButtons();
 
 				bus.unBindMsg("(.*)");
 				btnUnbind.setEnabled(false);
@@ -235,6 +250,7 @@ public class PaparazziIvyUtils
 					btnUnbind.setEnabled(true);
 					if(!bound)
 						bind();
+					displayBindedButtons();
 				}
 				else
 				{
@@ -255,6 +271,7 @@ public class PaparazziIvyUtils
 					btnUnbind.setEnabled(true);
 					if(!bound)
 						bind();
+          displayBindedButtons();
 				}
 				else
 				{
@@ -275,6 +292,7 @@ public class PaparazziIvyUtils
 					btnUnbind.setEnabled(true);
 					if(!bound)
 						bind();
+          displayBindedButtons();
 				}
 				else
 				{
@@ -295,6 +313,7 @@ public class PaparazziIvyUtils
           btnUnbind.setEnabled(true);
           if(!bound)
             bind();
+          displayBindedButtons();
         }
         else
         {
@@ -323,10 +342,7 @@ public class PaparazziIvyUtils
         tglbtnUav3i.setSelected(true);
 
         // Le texte des boutons s'affiche en gras indiquant que l'on est "bindé" sur le bus Ivy
-        tglbtnGCS.setFont(new Font("Dialog", Font.BOLD, 10));
-        tglbtnServer.setFont(new Font("Dialog", Font.BOLD, 10));
-        tglbtnSim.setFont(new Font("Dialog", Font.BOLD, 10));
-        tglbtnUav3i.setFont(new Font("Dialog", Font.BOLD, 10));
+        displayBindedButtons();
 			}
 		});
 		panelButtons.setLayout(new GridLayout(0, 7, 0, 0));
