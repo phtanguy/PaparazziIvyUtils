@@ -11,44 +11,43 @@ import java.util.Properties;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import fr.dgac.ivy.Ivy;
 import fr.dgac.ivy.IvyClient;
 import fr.dgac.ivy.IvyException;
 import fr.dgac.ivy.IvyMessageListener;
-import javax.swing.SwingConstants;
-import javax.swing.JLabel;
 
 public class PaparazziIvyUtils
 {
 	//-----------------------------------------------------------------------------
 	private String applicationName = "Paparazzi Ivy Utils";
 
-	private JFrame        frmPaparazziIvyUtils;
-	private JTextArea     ivyLogsArea;
-	private JButton       btnUnbind;
-  private JButton       btnSendMessage;
-  private JTextField    tfMessage;
-  private JLabel        lblDomainBus;
-	private JToggleButton tglbtnGCS;
-	private JToggleButton tglbtnServer;
-  private JToggleButton tglbtnSim;
-  private JToggleButton tglbtnUav3i;
-	private JToggleButton tglbtnAll;
+	private JFrame           frmPaparazziIvyUtils;
+	private JTextArea        ivyLogsArea;
+	private JButton          btnUnbind;
+  private JButton          btnSendMessage;
+  private JTextField       tfMessage;
+  private JLabel           lblDomainBus;
+	private IconToggleButton tglbtnGCS;
+	private IconToggleButton tglbtnServer;
+  private IconToggleButton tglbtnSim;
+  private IconToggleButton tglbtnUav3i;
+	private JButton    tglbtnAll;
 
-	private boolean tglbtnGCSActive, tglbtnServerActive, tglbtnSimActive, tglbtnUav3iActive, tglbtnAllActive  = false;
+  private boolean tglbtnGCSActive, tglbtnServerActive, tglbtnSimActive, tglbtnUav3iActive = false;
 	
-	private Ivy                  bus;
-  private String               domainBus;
+	private Ivy                 bus;
+  private String              domainBus;
 	private AllMessagesListener allMessagesListener;
-	private boolean              bound;
+	private boolean             bound;
 	//-----------------------------------------------------------------------------
 	/**
 	 * Launch the application.
@@ -157,7 +156,7 @@ public class PaparazziIvyUtils
 		frmPaparazziIvyUtils = new JFrame();
 		frmPaparazziIvyUtils.setTitle(applicationName);
 		//frmPaparazziIvyTools.setBounds(100, 100, 550, 900);
-		frmPaparazziIvyUtils.setSize(550, 900);
+		frmPaparazziIvyUtils.setSize(650, 900);
 		frmPaparazziIvyUtils.setLocationRelativeTo(null);
 		frmPaparazziIvyUtils.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmPaparazziIvyUtils.getContentPane().setLayout(new BorderLayout(0, 5));
@@ -197,27 +196,35 @@ public class PaparazziIvyUtils
 		});
 		
 		btnUnbind = new JButton("Unbind");
-		btnUnbind.setFont(new Font("Dialog", Font.BOLD, 10));
+    btnUnbind.setFont(new Font("Dialog", Font.BOLD, 10));
 		btnUnbind.setEnabled(false);
 		btnUnbind.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				tglbtnGCSActive = tglbtnServerActive = tglbtnSimActive = tglbtnAllActive = false;
+        // Drapeaux indiquant que l'on ne veut rien afficher
+        tglbtnGCSActive = tglbtnServerActive = tglbtnSimActive = tglbtnUav3iActive = false;
 				bound = false;
+
+				// Les boutons sont désélectionnés
 				tglbtnGCS.setSelected(false);
 				tglbtnServer.setSelected(false);
 				tglbtnSim.setSelected(false);
         tglbtnUav3i.setSelected(false);
-				tglbtnAll.setSelected(false);
-				
+
+        // Le texte des boutons s'affiche en italique indiquant que l'on n'est pas/plus "bindé" sur le bus Ivy
+        tglbtnGCS.setFont(new Font("Dialog", Font.ITALIC, 10));
+        tglbtnServer.setFont(new Font("Dialog", Font.ITALIC, 10));
+        tglbtnSim.setFont(new Font("Dialog", Font.ITALIC, 10));
+        tglbtnUav3i.setFont(new Font("Dialog", Font.ITALIC, 10));
+
 				bus.unBindMsg("(.*)");
 				btnUnbind.setEnabled(false);
 			}
 		});
 
-		tglbtnGCS = new JToggleButton("GCS", tglbtnGCSActive);
-		tglbtnGCS.setFont(new Font("Dialog", Font.BOLD, 10));
+		tglbtnGCS = new IconToggleButton("GCS", tglbtnGCSActive);
+    tglbtnGCS.setFont(new Font("Dialog", Font.ITALIC, 10));
 		tglbtnGCS.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -236,8 +243,8 @@ public class PaparazziIvyUtils
 			}
 		});
 
-		tglbtnServer = new JToggleButton("Server", tglbtnServerActive);
-		tglbtnServer.setFont(new Font("Dialog", Font.BOLD, 10));
+		tglbtnServer = new IconToggleButton("Server", tglbtnServerActive);
+    tglbtnServer.setFont(new Font("Dialog", Font.ITALIC, 10));
 		tglbtnServer.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -256,8 +263,8 @@ public class PaparazziIvyUtils
 			}
 		});
 
-		tglbtnSim = new JToggleButton("Sim", tglbtnSimActive);
-		tglbtnSim.setFont(new Font("Dialog", Font.BOLD, 10));
+		tglbtnSim = new IconToggleButton("Sim", tglbtnSimActive);
+    tglbtnSim.setFont(new Font("Dialog", Font.ITALIC, 10));
 		tglbtnSim.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -276,8 +283,8 @@ public class PaparazziIvyUtils
 			}
 		});
 
-    tglbtnUav3i = new JToggleButton("uav3i", tglbtnUav3iActive);
-    tglbtnUav3i.setFont(new Font("Dialog", Font.BOLD, 10));
+    tglbtnUav3i = new IconToggleButton("uav3i", tglbtnUav3iActive);
+    tglbtnUav3i.setFont(new Font("Dialog", Font.ITALIC, 10));
     tglbtnUav3i.addActionListener(new ActionListener()
     {
       public void actionPerformed(ActionEvent e)
@@ -296,23 +303,30 @@ public class PaparazziIvyUtils
       }
     });
 
-		tglbtnAll = new JToggleButton("All", tglbtnAllActive);
+    tglbtnAll = new JButton("All");
 		tglbtnAll.setFont(new Font("Dialog", Font.BOLD, 10));
 		tglbtnAll.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				if(!tglbtnAllActive)
-				{
-					tglbtnAllActive = true;
-					btnUnbind.setEnabled(true);
-					if(!bound)
-						bind();
-				}
-				else
-				{
-					tglbtnAllActive = false;
-				}
+        btnUnbind.setEnabled(true);
+        if(!bound)
+          bind();
+        
+        // Drapeaux indiquant que l'on veut tout afficher
+        tglbtnGCSActive = tglbtnServerActive = tglbtnSimActive = tglbtnUav3iActive = true;
+
+        // Les boutons sont sélectionnés
+        tglbtnGCS.setSelected(true);
+        tglbtnServer.setSelected(true);
+        tglbtnSim.setSelected(true);
+        tglbtnUav3i.setSelected(true);
+
+        // Le texte des boutons s'affiche en gras indiquant que l'on est "bindé" sur le bus Ivy
+        tglbtnGCS.setFont(new Font("Dialog", Font.BOLD, 10));
+        tglbtnServer.setFont(new Font("Dialog", Font.BOLD, 10));
+        tglbtnSim.setFont(new Font("Dialog", Font.BOLD, 10));
+        tglbtnUav3i.setFont(new Font("Dialog", Font.BOLD, 10));
 			}
 		});
 		panelButtons.setLayout(new GridLayout(0, 7, 0, 0));
@@ -372,11 +386,28 @@ public class PaparazziIvyUtils
 		  //System.out.println("Je reçois quelque chose... " + args[0]);
 			String applicationName = client.getApplicationName();
 
-			boolean display =    (applicationName.startsWith("Paparazzi GCS") && tglbtnGCSActive)
-                        || (applicationName.startsWith("Paparazzi server") && tglbtnServerActive)
-                        || (applicationName.startsWith("Paparazzi sim") && tglbtnSimActive)
-                        || (applicationName.startsWith("uav3i") && tglbtnUav3iActive)
-                        || tglbtnAllActive;
+			boolean display = false;
+			
+      if(applicationName.startsWith("Paparazzi GCS"))
+      {
+        tglbtnGCS.messageReceived();
+        display = tglbtnGCSActive;
+      }
+      else if(applicationName.startsWith("Paparazzi server"))
+      {
+        tglbtnServer.messageReceived();
+        display = tglbtnServerActive;
+      }
+      else if(applicationName.startsWith("Paparazzi sim"))
+      {
+        tglbtnSim.messageReceived();
+        display = tglbtnSimActive;
+      }
+      else if(applicationName.startsWith("uav3i"))
+      {
+        tglbtnUav3i.messageReceived();
+        display = tglbtnUav3iActive;
+      }
 			
 			if(display)
 			{
