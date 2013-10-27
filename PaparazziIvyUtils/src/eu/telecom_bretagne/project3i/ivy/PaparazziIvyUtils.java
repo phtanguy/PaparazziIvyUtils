@@ -40,7 +40,7 @@ public class PaparazziIvyUtils
 	private IconToggleButton tglbtnServer;
   private IconToggleButton tglbtnSim;
   private IconToggleButton tglbtnUav3i;
-	private JButton    tglbtnAll;
+	private JButton          btnAll;
 
   private boolean tglbtnGCSActive, tglbtnServerActive, tglbtnSimActive, tglbtnUav3iActive = false;
 	
@@ -322,9 +322,9 @@ public class PaparazziIvyUtils
       }
     });
 
-    tglbtnAll = new JButton("All");
-		tglbtnAll.setFont(new Font("Dialog", Font.BOLD, 10));
-		tglbtnAll.addActionListener(new ActionListener()
+    btnAll = new JButton("All");
+		btnAll.setFont(new Font("Dialog", Font.BOLD, 10));
+		btnAll.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
@@ -353,7 +353,7 @@ public class PaparazziIvyUtils
 		panelButtons.add(tglbtnServer);
     panelButtons.add(tglbtnSim);
     panelButtons.add(tglbtnUav3i);
-		panelButtons.add(tglbtnAll);
+		panelButtons.add(btnAll);
 		
 		tfMessage = new JTextField();
 		tfMessage.setHorizontalAlignment(SwingConstants.CENTER);
