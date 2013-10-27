@@ -149,20 +149,22 @@ public class PaparazziIvyUtils
 	private void displayBindedButtons()
 	{
     // Le texte des boutons s'affiche en gras indiquant que l'on est "bindé" sur le bus Ivy
-    tglbtnGCS.setFont(new Font("Dialog", Font.BOLD, 10));
-    tglbtnServer.setFont(new Font("Dialog", Font.BOLD, 10));
-    tglbtnSim.setFont(new Font("Dialog", Font.BOLD, 10));
-    tglbtnUav3i.setFont(new Font("Dialog", Font.BOLD, 10));
+	  applyFont(new Font("Dialog", Font.BOLD, 10));
 	}
   //-----------------------------------------------------------------------------
   private void displayUnBindedButtons()
   {
     // Le texte des boutons s'affiche en italique indiquant que l'on n'est pas/plus "bindé" sur le bus Ivy
-    tglbtnGCS.setFont(new Font("Dialog", Font.ITALIC, 10));
-    tglbtnServer.setFont(new Font("Dialog", Font.ITALIC, 10));
-    tglbtnSim.setFont(new Font("Dialog", Font.ITALIC, 10));
-    tglbtnUav3i.setFont(new Font("Dialog", Font.ITALIC, 10));
+    applyFont(new Font("Dialog", Font.ITALIC, 10));
   }
+  //-----------------------------------------------------------------------------
+	private void applyFont(Font font)
+	{
+    tglbtnGCS.setFont(font);
+    tglbtnServer.setFont(font);
+    tglbtnSim.setFont(font);
+    tglbtnUav3i.setFont(font);
+	}
   //-----------------------------------------------------------------------------
 	/**
 	 * Initialize the contents of the frame.
