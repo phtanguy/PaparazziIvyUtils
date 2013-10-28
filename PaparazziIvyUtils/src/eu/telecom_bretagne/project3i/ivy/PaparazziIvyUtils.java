@@ -19,6 +19,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
 
 import fr.dgac.ivy.Ivy;
 import fr.dgac.ivy.IvyClient;
@@ -42,12 +43,14 @@ public class PaparazziIvyUtils
   private IconToggleButton tglbtnUav3i;
 	private JButton          btnAll;
 
-  private boolean tglbtnGCSActive, tglbtnServerActive, tglbtnSimActive, tglbtnUav3iActive = false;
-	
 	private Ivy                 bus;
   private String              domainBus;
 	private AllMessagesListener allMessagesListener;
 	private boolean             bound;
+  private boolean             tglbtnGCSActive,
+                              tglbtnServerActive,
+                              tglbtnSimActive,
+                              tglbtnUav3iActive = false;
 	//-----------------------------------------------------------------------------
 	/**
 	 * Launch the application.
@@ -179,7 +182,7 @@ public class PaparazziIvyUtils
 		frmPaparazziIvyUtils.setSize(650, 900);
 		frmPaparazziIvyUtils.setLocationRelativeTo(null);
 		frmPaparazziIvyUtils.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmPaparazziIvyUtils.getContentPane().setLayout(new BorderLayout(0, 5));
+		frmPaparazziIvyUtils.getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		// ------- Display logs -------
 
@@ -193,28 +196,128 @@ public class PaparazziIvyUtils
 		// ------- Panels -------
 
 		JPanel panelCommands = new JPanel();
+		panelCommands.setBorder(new EmptyBorder(3, 3, 3, 3));
 		frmPaparazziIvyUtils.getContentPane().add(panelCommands, BorderLayout.SOUTH);
-		panelCommands.setLayout(new GridLayout(2, 1, 0, 5));
+		panelCommands.setLayout(new GridLayout(2, 1, 3, 5));
 		
 		JPanel panelButtons = new JPanel();
+    panelButtons.setLayout(new GridLayout(1, 7, 3, 0));
 		panelCommands.add(panelButtons);
 		
 		JPanel panelSendMessages = new JPanel();
 		panelCommands.add(panelSendMessages);
-		panelSendMessages.setLayout(new BorderLayout(0, 0));
+		panelSendMessages.setLayout(new BorderLayout(3, 0));
 
 		// ------- Buttons -------
 
-		JButton btnClear = new JButton("Clear");
-		btnClear.setFont(new Font("Dialog", Font.BOLD, 10));
-		btnClear.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				ivyLogsArea.setText("");
-			}
-		});
-		
+    btnAll = new JButton("Listen all");
+    btnAll.setFont(new Font("Dialog", Font.BOLD, 10));
+    btnAll.addActionListener(new ActionListener()
+    {
+      public void actionPerformed(ActionEvent e)
+      {
+        btnUnbind.setEnabled(true);
+        if(!bound)
+          bind();
+        
+        // Drapeaux indiquant que l'on veut tout afficher
+        tglbtnGCSActive = tglbtnServerActive = tglbtnSimActive = tglbtnUav3iActive = true;
+
+        // Les boutons sont sélectionnés
+        tglbtnGCS.setSelected(true);
+        tglbtnServer.setSelected(true);
+        tglbtnSim.setSelected(true);
+        tglbtnUav3i.setSelected(true);
+
+        // Le texte des boutons s'affiche en gras indiquant que l'on est "bindé" sur le bus Ivy
+        displayBindedButtons();
+      }
+    });
+
+    tglbtnGCS = new IconToggleButton("GCS", tglbtnGCSActive);
+    tglbtnGCS.setFont(new Font("Dialog", Font.ITALIC, 10));
+    tglbtnGCS.addActionListener(new ActionListener()
+    {
+      public void actionPerformed(ActionEvent e)
+      {
+        if(!tglbtnGCSActive)
+        {
+          tglbtnGCSActive = true;
+          btnUnbind.setEnabled(true);
+          if(!bound)
+            bind();
+          displayBindedButtons();
+        }
+        else
+        {
+          tglbtnGCSActive = false;
+        }
+      }
+    });
+
+    tglbtnServer = new IconToggleButton("Server", tglbtnServerActive);
+    tglbtnServer.setFont(new Font("Dialog", Font.ITALIC, 10));
+    tglbtnServer.addActionListener(new ActionListener()
+    {
+      public void actionPerformed(ActionEvent e)
+      {
+        if(!tglbtnServerActive)
+        {
+          tglbtnServerActive = true;
+          btnUnbind.setEnabled(true);
+          if(!bound)
+            bind();
+          displayBindedButtons();
+        }
+        else
+        {
+          tglbtnServerActive = false;
+        }
+      }
+    });
+
+    tglbtnSim = new IconToggleButton("Sim", tglbtnSimActive);
+    tglbtnSim.setFont(new Font("Dialog", Font.ITALIC, 10));
+    tglbtnSim.addActionListener(new ActionListener()
+    {
+      public void actionPerformed(ActionEvent e)
+      {
+        if(!tglbtnSimActive)
+        {
+          tglbtnSimActive = true;
+          btnUnbind.setEnabled(true);
+          if(!bound)
+            bind();
+          displayBindedButtons();
+        }
+        else
+        {
+          tglbtnSimActive = false;
+        }
+      }
+    });
+
+    tglbtnUav3i = new IconToggleButton("uav3i", tglbtnUav3iActive);
+    tglbtnUav3i.setFont(new Font("Dialog", Font.ITALIC, 10));
+    tglbtnUav3i.addActionListener(new ActionListener()
+    {
+      public void actionPerformed(ActionEvent e)
+      {
+        if(!tglbtnUav3iActive)
+        {
+          tglbtnUav3iActive = true;
+          btnUnbind.setEnabled(true);
+          if(!bound)
+            bind();
+          displayBindedButtons();
+        }
+        else
+        {
+          tglbtnUav3iActive = false;
+        }
+      }
+    });
+
 		btnUnbind = new JButton("Unbind");
     btnUnbind.setFont(new Font("Dialog", Font.BOLD, 10));
 		btnUnbind.setEnabled(false);
@@ -240,122 +343,23 @@ public class PaparazziIvyUtils
 			}
 		});
 
-		tglbtnGCS = new IconToggleButton("GCS", tglbtnGCSActive);
-    tglbtnGCS.setFont(new Font("Dialog", Font.ITALIC, 10));
-		tglbtnGCS.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				if(!tglbtnGCSActive)
-				{
-					tglbtnGCSActive = true;
-					btnUnbind.setEnabled(true);
-					if(!bound)
-						bind();
-					displayBindedButtons();
-				}
-				else
-				{
-					tglbtnGCSActive = false;
-				}
-			}
-		});
-
-		tglbtnServer = new IconToggleButton("Server", tglbtnServerActive);
-    tglbtnServer.setFont(new Font("Dialog", Font.ITALIC, 10));
-		tglbtnServer.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				if(!tglbtnServerActive)
-				{
-					tglbtnServerActive = true;
-					btnUnbind.setEnabled(true);
-					if(!bound)
-						bind();
-          displayBindedButtons();
-				}
-				else
-				{
-					tglbtnServerActive = false;
-				}
-			}
-		});
-
-		tglbtnSim = new IconToggleButton("Sim", tglbtnSimActive);
-    tglbtnSim.setFont(new Font("Dialog", Font.ITALIC, 10));
-		tglbtnSim.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				if(!tglbtnSimActive)
-				{
-					tglbtnSimActive = true;
-					btnUnbind.setEnabled(true);
-					if(!bound)
-						bind();
-          displayBindedButtons();
-				}
-				else
-				{
-					tglbtnSimActive = false;
-				}
-			}
-		});
-
-    tglbtnUav3i = new IconToggleButton("uav3i", tglbtnUav3iActive);
-    tglbtnUav3i.setFont(new Font("Dialog", Font.ITALIC, 10));
-    tglbtnUav3i.addActionListener(new ActionListener()
+    JButton btnClear = new JButton("Clear");
+    btnClear.setFont(new Font("Dialog", Font.BOLD, 10));
+    btnClear.addActionListener(new ActionListener()
     {
       public void actionPerformed(ActionEvent e)
       {
-        if(!tglbtnUav3iActive)
-        {
-          tglbtnUav3iActive = true;
-          btnUnbind.setEnabled(true);
-          if(!bound)
-            bind();
-          displayBindedButtons();
-        }
-        else
-        {
-          tglbtnUav3iActive = false;
-        }
+        ivyLogsArea.setText("");
       }
     });
-
-    btnAll = new JButton("All");
-		btnAll.setFont(new Font("Dialog", Font.BOLD, 10));
-		btnAll.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-        btnUnbind.setEnabled(true);
-        if(!bound)
-          bind();
-        
-        // Drapeaux indiquant que l'on veut tout afficher
-        tglbtnGCSActive = tglbtnServerActive = tglbtnSimActive = tglbtnUav3iActive = true;
-
-        // Les boutons sont sélectionnés
-        tglbtnGCS.setSelected(true);
-        tglbtnServer.setSelected(true);
-        tglbtnSim.setSelected(true);
-        tglbtnUav3i.setSelected(true);
-
-        // Le texte des boutons s'affiche en gras indiquant que l'on est "bindé" sur le bus Ivy
-        displayBindedButtons();
-			}
-		});
-		panelButtons.setLayout(new GridLayout(0, 7, 0, 0));
-
-		panelButtons.add(btnClear);
-		panelButtons.add(btnUnbind);
+    
+    panelButtons.add(btnAll);
 		panelButtons.add(tglbtnGCS);
 		panelButtons.add(tglbtnServer);
     panelButtons.add(tglbtnSim);
     panelButtons.add(tglbtnUav3i);
-		panelButtons.add(btnAll);
+    panelButtons.add(btnUnbind);
+    panelButtons.add(btnClear);
 		
 		tfMessage = new JTextField();
 		tfMessage.setHorizontalAlignment(SwingConstants.CENTER);
