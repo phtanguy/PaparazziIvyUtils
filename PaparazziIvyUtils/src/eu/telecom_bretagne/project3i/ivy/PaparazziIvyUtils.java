@@ -25,6 +25,7 @@ import fr.dgac.ivy.Ivy;
 import fr.dgac.ivy.IvyClient;
 import fr.dgac.ivy.IvyException;
 import fr.dgac.ivy.IvyMessageListener;
+import java.awt.Dimension;
 
 public class PaparazziIvyUtils
 {
@@ -35,13 +36,15 @@ public class PaparazziIvyUtils
 	private JTextArea        ivyLogsArea;
 	private JButton          btnUnbind;
   private JButton          btnSendMessage;
-  private JTextField       tfMessage;
-  private JLabel           lblDomainBus;
+  private JButton          btnAll;
+  private JButton          btnApplyFilter;
 	private IconToggleButton tglbtnGCS;
 	private IconToggleButton tglbtnServer;
   private IconToggleButton tglbtnSim;
   private IconToggleButton tglbtnUav3i;
-	private JButton          btnAll;
+  private JLabel           lblDomainBus;
+  private JTextField       tfMessage;
+  private JTextField       tfFilter;
 
 	private Ivy                 bus;
   private String              domainBus;
@@ -51,6 +54,7 @@ public class PaparazziIvyUtils
                               tglbtnServerActive,
                               tglbtnSimActive,
                               tglbtnUav3iActive = false;
+  private boolean             filterActive = false;
 	//-----------------------------------------------------------------------------
 	/**
 	 * Launch the application.
@@ -198,11 +202,26 @@ public class PaparazziIvyUtils
 		JPanel panelCommands = new JPanel();
 		panelCommands.setBorder(new EmptyBorder(3, 3, 3, 3));
 		frmPaparazziIvyUtils.getContentPane().add(panelCommands, BorderLayout.SOUTH);
-		panelCommands.setLayout(new GridLayout(2, 1, 3, 5));
+		panelCommands.setLayout(new GridLayout(4, 1, 3, 5));
+		
+		JPanel panelDomainBus = new JPanel();
+		panelCommands.add(panelDomainBus);
+		panelDomainBus.setLayout(new BorderLayout(0, 0));
+		
+		lblDomainBus = new JLabel("<html>Ivy Domain Bus: <i>" + domainBus + "</i>");
+		lblDomainBus.setPreferredSize(new Dimension(300,25));
+
+		panelDomainBus.add(lblDomainBus, BorderLayout.WEST);
+		lblDomainBus.setFont(new Font("Dialog", Font.BOLD, 10));
+		lblDomainBus.setHorizontalAlignment(SwingConstants.LEFT);
 		
 		JPanel panelButtons = new JPanel();
     panelButtons.setLayout(new GridLayout(1, 7, 3, 0));
 		panelCommands.add(panelButtons);
+		
+		JPanel panelFiltre = new JPanel();
+		panelCommands.add(panelFiltre);
+		panelFiltre.setLayout(new BorderLayout(3, 0));
 		
 		JPanel panelSendMessages = new JPanel();
 		panelCommands.add(panelSendMessages);
@@ -361,14 +380,47 @@ public class PaparazziIvyUtils
     panelButtons.add(btnUnbind);
     panelButtons.add(btnClear);
 		
+    tfFilter = new JTextField();
+    tfFilter.setHorizontalAlignment(SwingConstants.LEFT);
+    tfFilter.setFont(new Font("Dialog", Font.BOLD, 11));
+    tfFilter.setColumns(10);
+    panelFiltre.add(tfFilter);
+    
+    btnApplyFilter = new JButton("Apply filter");
+    btnApplyFilter.addActionListener(new ActionListener()
+    {
+      public void actionPerformed(ActionEvent e)
+      {
+        if(!tfFilter.getText().equals(""))
+        {
+          filterActive = !filterActive;
+          if(filterActive)
+          {
+            btnApplyFilter.setText(("Remove filter"));
+            allMessagesListener.filter(tfFilter.getText());
+          }
+          else
+          {
+            btnApplyFilter.setText(("Apply filter"));
+            //tfFilter.setText("");
+            allMessagesListener.filter("");
+          }
+        }
+      }
+    });
+    btnApplyFilter.setPreferredSize(new Dimension(150,25));
+    btnApplyFilter.setHorizontalAlignment(SwingConstants.CENTER);
+    btnApplyFilter.setFont(new Font("Dialog", Font.BOLD, 10));
+    panelFiltre.add(btnApplyFilter, BorderLayout.EAST);
+    
 		tfMessage = new JTextField();
-		tfMessage.setHorizontalAlignment(SwingConstants.CENTER);
+		tfMessage.setHorizontalAlignment(SwingConstants.LEFT);
 		tfMessage.setFont(new Font("Consolas", Font.BOLD, 11));
 		panelSendMessages.add(tfMessage, BorderLayout.CENTER);
 		tfMessage.setColumns(10);
 		
 		btnSendMessage = new JButton("Send");
-		btnSendMessage.setHorizontalAlignment(SwingConstants.RIGHT);
+		btnSendMessage.setPreferredSize(new Dimension(150,25));
 		btnSendMessage.setFont(new Font("Dialog", Font.BOLD, 10));
 		btnSendMessage.addActionListener(new ActionListener()
 		{
@@ -385,11 +437,6 @@ public class PaparazziIvyUtils
 			}
 		});
 		panelSendMessages.add(btnSendMessage, BorderLayout.EAST);
-		
-		lblDomainBus = new JLabel("<html>Ivy Domain Bus: <i>" + domainBus + "</i>");
-		lblDomainBus.setFont(new Font("Dialog", Font.BOLD, 10));
-		lblDomainBus.setHorizontalAlignment(SwingConstants.LEFT);
-		panelSendMessages.add(lblDomainBus, BorderLayout.NORTH);
 	}
 	//-----------------------------------------------------------------------------
 
@@ -402,6 +449,9 @@ public class PaparazziIvyUtils
 	//-----------------------------------------------------------------------------
 	private class AllMessagesListener implements IvyMessageListener
 	{
+	  private String filter = null;
+	  private String format = "%1$-20s| %2$s\n";
+	  
 		@Override
     public void receive(IvyClient client, String[] args)
     {
@@ -433,11 +483,29 @@ public class PaparazziIvyUtils
 			
 			if(display)
 			{
-				String format = "%1$-20s| %2$s\n";
-				ivyLogsArea.append(String.format(format, applicationName, args[0]));
-				ivyLogsArea.setCaretPosition(ivyLogsArea.getText().length());
+			  if(filter == null) // Pas de filtre à appliquer
+			  {
+          ivyLogsArea.append(String.format(format, applicationName, args[0]));
+          ivyLogsArea.setCaretPosition(ivyLogsArea.getText().length());
+			  }
+			  else // On n'affiche que les chaînes contenant le filtre
+			  {
+          if(args[0].contains(filter))
+          {
+            ivyLogsArea.append(String.format(format, applicationName, args[0]));
+            ivyLogsArea.setCaretPosition(ivyLogsArea.getText().length());
+          }
+			  }
 			}
     }
+		
+		public void filter(String filter)
+		{
+		  if(filter.equals(""))
+		    this.filter = null;
+		  else
+		    this.filter = filter;
+		}
 	}
 	//-----------------------------------------------------------------------------
 }
